@@ -1,0 +1,11 @@
+# General
+.DS_Store
+*.zip
+*.raw
+*.log
+
+# Eclipse
+.settings
+.launches
+Debug
+targetConfigs
