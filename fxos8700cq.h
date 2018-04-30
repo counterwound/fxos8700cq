@@ -1,14 +1,27 @@
-/*
- * fxos8700cq.h
- *
- *  Created on: Apr 23, 2018
- *      Author: brandon.dixon
- */
+//*****************************************************************************
+// fxos8700cq.h - Prototypes for the FXOS8700CQ Peripheral
+//
+//  Created on: Apr 23, 2018
+//      Author: Brandon Dixon
+//
+//*****************************************************************************
 
 #ifndef FXOS8700CQ_H_
 #define FXOS8700CQ_H_
 
-// register addresses
+//*****************************************************************************
+// If building with a C++ compiler, make all of the definitions in this header
+// have a C binding.
+//*****************************************************************************
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+//*****************************************************************************
+// Register addreses
+//*****************************************************************************
 #define AG_STATUS           0x00
 #define AG_DR_STATUS        0x00
 #define AG_F_STATUS         0x00
@@ -147,19 +160,34 @@ typedef enum
     ODR_1_56HZ
 } tOutputDataRate;
 
+typedef enum
+{
+    ACCEL_ONLY,
+    MAG_ONLY,
+    ACCEL_AND_MAG = 3
+} tHybridMode;
+
 /*
  * I2C General Send and receive functions
  */
-extern uint32_t I2CAGReceive(uint32_t ui32Base, uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister);
-extern void I2CAGSend(uint32_t ui32Base, uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
+extern uint32_t I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister);
+extern void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
 
 /*
  * FXOS8700CQ functions
  */
 
-extern void AGStandby(uint32_t ui32Base, uint32_t ui32SlaveAddress);
-extern void AGActive(uint32_t ui32Base, uint32_t ui32SlaveAddress);
-extern void AGAccelRange(uint32_t ui32Base, uint32_t ui32SlaveAddress, tAccelRange tAFSR);
-extern void AGOutputDataRate(uint32_t ui32Base, uint32_t ui32SlaveAddress, tOutputDataRate tODR);
+extern void AGStandby(uint32_t ui32SlaveAddress);
+extern void AGActive(uint32_t ui32SlaveAddress);
+extern void AGAccelRange(uint32_t ui32SlaveAddress, tAccelRange tAFSR);
+extern void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR);
+extern void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM);
+
+//*****************************************************************************
+// Mark the end of the C bindings section for C++ compilers.
+//*****************************************************************************
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FXOS8700CQ_H_ */
