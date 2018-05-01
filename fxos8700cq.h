@@ -167,10 +167,24 @@ typedef enum
     ACCEL_AND_MAG = 3
 } tHybridMode;
 
+typedef enum
+{
+    ACCEL_DATA,
+    MAG_DATA
+} tDataType;
+
+typedef struct
+{
+    int16_t x;
+    int16_t y;
+    int16_t z;
+} tRawData;
+
 /*
  * I2C General Send and receive functions
  */
-extern uint32_t I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister);
+extern void I2AGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+                    uint8_t pReceiveData[], uint8_t ui8NumBytes);
 extern void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
 
 /*
@@ -182,6 +196,7 @@ extern void AGActive(uint32_t ui32SlaveAddress);
 extern void AGAccelRange(uint32_t ui32SlaveAddress, tAccelRange tAFSR);
 extern void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR);
 extern void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM);
+//extern int16_t AGReadData(tRawData *pData, tDataType tDT);
 
 //*****************************************************************************
 // Mark the end of the C bindings section for C++ compilers.

@@ -14,7 +14,8 @@
 #include "inc/hw_memmap.h"
 #include "fxos8700cq.h"
 
-uint32_t I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister)
+void I2AGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+             uint8_t *pReceiveData, uint8_t ui8NumBytes)
 {
     //specify that we are writing (a register address) to the
     //slave device
@@ -32,15 +33,53 @@ uint32_t I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister)
     //specify that we are going to read from slave device
     I2CMasterSlaveAddrSet(I2C0_BASE, ui32SlaveAddress, true);
 
-    //send control byte and read from the register we
-    //specified
-    I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_SINGLE_RECEIVE);
+    //if there is only one argument, we only need to use the
+    //single send I2C function
+    if( 1 == ui8NumBytes )
+    {
+        //send control byte and read from the register we
+        //specified
+        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_SINGLE_RECEIVE);
 
-    //wait for MCU to finish transaction
-    while(I2CMasterBusy(I2C0_BASE));
+        //wait for MCU to finish transaction
+        while(I2CMasterBusy(I2C0_BASE));
 
-    //return data pulled from the specified register
-    return I2CMasterDataGet(I2C0_BASE);
+        //return data pulled from the specified register
+        pReceiveData[0] = I2CMasterDataGet(I2C0_BASE);
+    }
+    else
+    {
+        //Initiate send of data from the MCU
+        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_RECEIVE_START);
+
+        // Wait until MCU is done transferring.
+        while(I2CMasterBusy(I2C0_BASE));
+
+        //return data pulled from the specified register
+        pReceiveData[0] = I2CMasterDataGet(I2C0_BASE);
+
+        uint8_t ui8Counter;
+        for (ui8Counter = 1; ui8Counter < (ui8NumBytes - 1); ui8Counter++ )
+        {
+            //Initiate send of data from the MCU
+            I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_RECEIVE_CONT);
+
+            // Wait until MCU is done transferring.
+            while(I2CMasterBusy(I2C0_BASE));
+
+            //return data pulled from the specified register
+            pReceiveData[ui8Counter] = I2CMasterDataGet(I2C0_BASE);
+        }
+
+        //Initiate send of data from the MCU
+        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_RECEIVE_FINISH);
+
+        // Wait until MCU is done transferring.
+        while(I2CMasterBusy(I2C0_BASE));
+
+        //return data pulled from the specified register
+        pReceiveData[ui8Counter] = I2CMasterDataGet(I2C0_BASE);
+    }
 }
 
 //sends an I2C command to the specified slave
@@ -114,42 +153,42 @@ void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...)
 
 void AGStandby(uint32_t ui32SlaveAddress)
 {
-    uint8_t ui8Register;
-    ui8Register = I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1);
-    ui8Register &= ~(0B00000001);
-    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register);
+    uint8_t ui8Register[1];
+    I2AGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    ui8Register[0] &= ~(0B00000001);
+    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
 }
 
 void AGActive(uint32_t ui32SlaveAddress)
 {
-    uint8_t ui8Register;
-    ui8Register = I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1);
-    ui8Register |= 0B00000001;
-    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register);
+    uint8_t ui8Register[1];
+    I2AGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    ui8Register[0] |= 0B00000001;
+    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
 }
 void AGAccelRange(uint32_t ui32SlaveAddress,tAccelRange tAFSR)
 {
-    uint8_t ui8Register;
-    ui8Register = I2CAGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG);
-    ui8Register &= ~(0B00000011);
-    ui8Register |= tAFSR;
-    I2CAGSend(ui32SlaveAddress, 2, AG_XYZ_DATA_CFG, ui8Register);
+    uint8_t ui8Register[1];
+    I2AGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
+    ui8Register[0] &= ~(0B00000011);
+    ui8Register[0] |= tAFSR;
+    I2CAGSend(ui32SlaveAddress, 2, AG_XYZ_DATA_CFG, ui8Register[0]);
 }
 
 void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR)
 {
-    uint8_t ui8Register;
-    ui8Register = I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1);
-    ui8Register &= ~(0B00111000);
-    ui8Register |= (tODR << 3 );
-    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register);
+    uint8_t ui8Register[1];
+    I2AGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    ui8Register[0] &= ~(0B00111000);
+    ui8Register[0] |= (tODR << 3 );
+    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
 }
 
 void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM)
 {
-    uint8_t ui8Register;
-    ui8Register = I2CAGReceive(ui32SlaveAddress, AG_M_CTRL_REG1);
-    ui8Register &= ~(0B00000011);
-    ui8Register |= tHM;
-    I2CAGSend(ui32SlaveAddress, 2, AG_M_CTRL_REG1, ui8Register);
+    uint8_t ui8Register[1];
+    I2AGReceive(ui32SlaveAddress, AG_M_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    ui8Register[0] &= ~(0B00000011);
+    ui8Register[0] |= tHM;
+    I2CAGSend(ui32SlaveAddress, 2, AG_M_CTRL_REG1, ui8Register[0]);
 }
