@@ -196,6 +196,7 @@ extern void AGActive(uint32_t ui32SlaveAddress);
 extern void AGAccelRange(uint32_t ui32SlaveAddress, tAccelRange tAFSR);
 extern void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR);
 extern void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM);
+extern void AGGetData(uint32_t ui32SlaveAddress, tDataType tDT, tRawData *tRD );
 
 //*****************************************************************************
 // Mark the end of the C bindings section for C++ compilers.
