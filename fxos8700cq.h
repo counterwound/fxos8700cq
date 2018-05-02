@@ -140,6 +140,10 @@ extern "C"
 #define AG_A_FFMT_THS_Z_MSB 0x77
 #define AG_A_FFMT_THS_Z_LSB 0x78
 
+//*****************************************************************************
+// Functions
+//*****************************************************************************
+
 // Set initial input parameters
 typedef enum
 {
@@ -180,17 +184,12 @@ typedef struct
     int16_t z;
 } tRawData;
 
-/*
- * I2C General Send and receive functions
- */
+// I2C General Send and receive functions
 extern void I2AGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
                     uint8_t *pReceiveData, uint8_t ui8NumBytes);
 extern void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
 
-/*
- * FXOS8700CQ functions
- */
-
+// FXOS8700CQ functions
 extern void AGStandby(uint32_t ui32SlaveAddress);
 extern void AGActive(uint32_t ui32SlaveAddress);
 extern void AGAccelRange(uint32_t ui32SlaveAddress, tAccelRange tAFSR);
