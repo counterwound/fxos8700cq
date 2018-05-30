@@ -14,7 +14,7 @@
 #include "inc/hw_memmap.h"
 #include "fxos8700cq.h"
 
-void I2AGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
              uint8_t *pReceiveData, uint8_t ui8NumBytes)
 {
     //specify that we are writing (a register address) to the
@@ -154,7 +154,7 @@ void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...)
 void AGStandby(uint32_t ui32SlaveAddress)
 {
     uint8_t ui8Register[1];
-    I2AGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00000001);
     I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
 }
@@ -162,14 +162,14 @@ void AGStandby(uint32_t ui32SlaveAddress)
 void AGActive(uint32_t ui32SlaveAddress)
 {
     uint8_t ui8Register[1];
-    I2AGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] |= 0B00000001;
     I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
 }
 void AGAccelRange(uint32_t ui32SlaveAddress,tAccelRange tAFSR)
 {
     uint8_t ui8Register[1];
-    I2AGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
+    I2CAGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00000011);
     ui8Register[0] |= tAFSR;
     I2CAGSend(ui32SlaveAddress, 2, AG_XYZ_DATA_CFG, ui8Register[0]);
@@ -178,7 +178,7 @@ void AGAccelRange(uint32_t ui32SlaveAddress,tAccelRange tAFSR)
 void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR)
 {
     uint8_t ui8Register[1];
-    I2AGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00111000);
     ui8Register[0] |= (tODR << 3 );
     I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
@@ -187,7 +187,7 @@ void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR)
 void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM)
 {
     uint8_t ui8Register[1];
-    I2AGReceive(ui32SlaveAddress, AG_M_CTRL_REG1, ui8Register, sizeof(ui8Register));
+    I2CAGReceive(ui32SlaveAddress, AG_M_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00000011);
     ui8Register[0] |= tHM;
     I2CAGSend(ui32SlaveAddress, 2, AG_M_CTRL_REG1, ui8Register[0]);
@@ -196,7 +196,7 @@ void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM)
 void AGGetData(uint32_t ui32SlaveAddress, tDataType tDT, tRawData *tRD )
 {
     uint8_t ui8Register[13];
-    I2AGReceive(ui32SlaveAddress, AG_STATUS, ui8Register, sizeof(ui8Register));
+    I2CAGReceive(ui32SlaveAddress, AG_STATUS, ui8Register, sizeof(ui8Register));
 
     if (ACCEL_DATA == tDT)
     {
