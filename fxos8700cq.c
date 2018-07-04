@@ -9,9 +9,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include "inc/hw_i2c.h"
-#include "driverlib/i2c.h"
-#include "inc/hw_memmap.h"
 #include "fxos8700cq.h"
 
 void AGStandby(uint32_t ui32SlaveAddress)
