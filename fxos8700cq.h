@@ -185,17 +185,17 @@ typedef struct
 } tRawData;
 
 // I2C General Send and receive functions
-extern void I2AGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
                     uint8_t *pReceiveData, uint8_t ui8NumBytes);
-extern void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
+void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
 
 // FXOS8700CQ functions
-extern void AGStandby(uint32_t ui32SlaveAddress);
-extern void AGActive(uint32_t ui32SlaveAddress);
-extern void AGAccelRange(uint32_t ui32SlaveAddress, tAccelRange tAFSR);
-extern void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR);
-extern void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM);
-extern void AGGetData(uint32_t ui32SlaveAddress, tDataType tDT, tRawData *tRD );
+void AGStandby(uint32_t ui32SlaveAddress);
+void AGActive(uint32_t ui32SlaveAddress);
+void AGAccelRange(uint32_t ui32SlaveAddress, tAccelRange tAFSR);
+void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR);
+void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM);
+void AGGetData(uint32_t ui32SlaveAddress, tDataType tDT, tRawData *tRD );
 
 //*****************************************************************************
 // Mark the end of the C bindings section for C++ compilers.
