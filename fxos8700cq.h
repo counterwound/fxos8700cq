@@ -185,9 +185,9 @@ typedef struct
 } tRawData;
 
 // I2C General Send and receive functions
-void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+extern void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
                     uint8_t *pReceiveData, uint8_t ui8NumBytes);
-void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
+extern void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
 
 // FXOS8700CQ functions
 void AGStandby(uint32_t ui32SlaveAddress);
