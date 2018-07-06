@@ -14,13 +14,36 @@
 #include <linux/i2c-dev.h>
 #include "fxos8700cq_linaro.h"
 
-void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister, uint8_t *pReceiveData, uint8_t ui8NumBytes)
+void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+             uint8_t *pReceiveData, uint8_t ui8NumBytes)
 {
+    //specify that we are reading from an I2C device
+    int file;
+    file = open("/dev/i2c-1", O_RDWR);
 
+    //specify that we are writing (a register address) to the
+    //slave device
+    ioctl(file, I2C_SLAVE, ui32SlaveAddress);
+
+  uint8_t res;
+
+  /* Using SMBus commands */
+  res = i2c_smbus_read_byte_data(file, ui32SlaveRegister);
+  if (res < 0) {
+    /* ERROR HANDLING: i2c transaction failed */
+    printf("read failed.\n");
+  } else {
+    /* res contains the read word */
+    printf("WHO_AM_I = 0x%x\n", res);
+  }
+
+
+    //close the handler used to read from device
+    close(file);
 }
 
 //sends an I2C command to the specified slave
 void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...)
 {
-
+  printf("Transmit!\n");
 }
