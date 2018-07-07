@@ -23,9 +23,6 @@ extern "C"
 // Functions
 //*****************************************************************************
 
-// Define FXOS8700CQ I2C address, determined by PCB layout with pins SA0=1, SA1=0
-#define AG_SLAVE_ADDR       0x1D
-
 // I2C General Send and receive functions
 void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
                     uint8_t *pReceiveData, uint8_t ui8NumBytes);
