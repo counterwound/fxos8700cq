@@ -25,18 +25,8 @@ void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
     //slave device
     ioctl(file, I2C_SLAVE, ui32SlaveAddress);
 
-  uint8_t res;
-
-  /* Using SMBus commands */
-  res = i2c_smbus_read_byte_data(file, ui32SlaveRegister);
-  if (res < 0) {
-    /* ERROR HANDLING: i2c transaction failed */
-    printf("read failed.\n");
-  } else {
-    /* res contains the read word */
-    printf("WHO_AM_I = 0x%x\n", res);
-  }
-
+    //return block data pulled from the specified register
+    i2c_smbus_read_i2c_block_data(file, ui32SlaveRegister,ui8NumBytes,pReceiveData);
 
     //close the handler used to read from device
     close(file);
