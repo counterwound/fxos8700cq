@@ -16,7 +16,7 @@ void AGStandby(uint32_t ui32SlaveAddress)
     uint8_t ui8Register[1];
     I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00000001);
-    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
+    I2CAGSend(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
 }
 
 void AGActive(uint32_t ui32SlaveAddress)
@@ -24,7 +24,7 @@ void AGActive(uint32_t ui32SlaveAddress)
     uint8_t ui8Register[1];
     I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] |= 0B00000001;
-    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
+    I2CAGSend(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
 }
 void AGAccelRange(uint32_t ui32SlaveAddress,tAccelRange tAFSR)
 {
@@ -32,7 +32,7 @@ void AGAccelRange(uint32_t ui32SlaveAddress,tAccelRange tAFSR)
     I2CAGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00000011);
     ui8Register[0] |= tAFSR;
-    I2CAGSend(ui32SlaveAddress, 2, AG_XYZ_DATA_CFG, ui8Register[0]);
+    I2CAGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
 }
 
 void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR)
@@ -41,7 +41,7 @@ void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR)
     I2CAGReceive(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00111000);
     ui8Register[0] |= (tODR << 3 );
-    I2CAGSend(ui32SlaveAddress, 2, AG_CTRL_REG1, ui8Register[0]);
+    I2CAGSend(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
 }
 
 void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM)
@@ -50,7 +50,7 @@ void AGHybridMode(uint32_t ui32SlaveAddress, tHybridMode tHM)
     I2CAGReceive(ui32SlaveAddress, AG_M_CTRL_REG1, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00000011);
     ui8Register[0] |= tHM;
-    I2CAGSend(ui32SlaveAddress, 2, AG_M_CTRL_REG1, ui8Register[0]);
+    I2CAGSend(ui32SlaveAddress, AG_M_CTRL_REG1, ui8Register, sizeof(ui8Register));
 }
 
 void AGGetData(uint32_t ui32SlaveAddress, tDataType tDT, tRawData *tRD )

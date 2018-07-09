@@ -26,7 +26,8 @@ extern "C"
 // I2C General Send and receive functions
 void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
                     uint8_t *pReceiveData, uint8_t ui8NumBytes);
-void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...);
+void I2CAGSend(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+                    uint8_t *pTransmitData, uint8_t ui8NumBytes);
 
 //*****************************************************************************
 // Mark the end of the C bindings section for C++ compilers.
