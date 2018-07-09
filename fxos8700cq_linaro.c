@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/i2c-dev.h>
-#include "fxos8700cq_linaro.h"
+#include "fxos8700cq_proc.h"
 
 void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
              uint8_t *pReceiveData, uint8_t ui8NumBytes)
