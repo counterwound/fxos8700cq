@@ -32,7 +32,7 @@ void AGAccelRange(uint32_t ui32SlaveAddress,tAccelRange tAFSR)
     I2CAGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
     ui8Register[0] &= ~(0B00000011);
     ui8Register[0] |= tAFSR;
-    I2CAGReceive(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
+    I2CAGSend(ui32SlaveAddress, AG_XYZ_DATA_CFG, ui8Register, sizeof(ui8Register));
 }
 
 void AGOutputDataRate(uint32_t ui32SlaveAddress, tOutputDataRate tODR)
