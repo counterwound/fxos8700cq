@@ -6,8 +6,8 @@
 //
 //*****************************************************************************
 
-#ifndef FXOS8700CQ_TIVA_H_
-#define FXOS8700CQ_TIVA_H_
+#ifndef FXOS8700CQ_PROC_H_
+#define FXOS8700CQ_PROC_H_
 
 //*****************************************************************************
 // If building with a C++ compiler, make all of the definitions in this header
@@ -36,4 +36,4 @@ void I2CAGSend(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
 }
 #endif
 
-#endif /* FXOS8700CQ_TIVA_H_ */
+#endif /* FXOS8700CQ_PROC_H_ */
