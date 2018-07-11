@@ -61,16 +61,16 @@ void AGGetData(uint32_t ui32SlaveAddress, tDataType tDT, tRawData *tRD )
     if (ACCEL_DATA == tDT)
     {
         // copy the 14 bit accelerometer byte data into 16 bit words
-        tRD->x = (int16_t)(((ui8Register[1] << 8) | ui8Register[2]))>> 2;
-        tRD->y = (int16_t)(((ui8Register[3] << 8) | ui8Register[4]))>> 2;
-        tRD->z = (int16_t)(((ui8Register[5] << 8) | ui8Register[6]))>> 2;
+        tRD->x = (int16_t)((ui8Register[1] << 8) | (ui8Register[2] >> 2));
+        tRD->y = (int16_t)((ui8Register[3] << 8) | (ui8Register[4] >> 2));
+        tRD->z = (int16_t)((ui8Register[5] << 8) | (ui8Register[6] >> 2));
     }
     else if (MAG_DATA == tDT)
     {
         // copy the magnetometer byte data into 16 bit words
-        tRD->x = (ui8Register[7] << 8) | ui8Register[8];
-        tRD->y = (ui8Register[9] << 8) | ui8Register[10];
-        tRD->z = (ui8Register[11] << 8) | ui8Register[12];
+        tRD->x = (int16_t)((ui8Register[7]  << 8) | ui8Register[8] );
+        tRD->y = (int16_t)((ui8Register[9]  << 8) | ui8Register[10]);
+        tRD->z = (int16_t)((ui8Register[11] << 8) | ui8Register[12]);
     }
     else
     {

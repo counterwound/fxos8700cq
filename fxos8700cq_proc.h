@@ -1,5 +1,5 @@
 //*****************************************************************************
-// fxos8700cq_tiva.h - Prototypes for the FXOS8700CQ Peripheral
+// fxos8700cq_proc.h - Prototypes for the FXOS8700CQ Peripheral
 //
 //  Created on: Jul 4, 2018
 //      Author: Brandon Dixon
