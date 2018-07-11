@@ -12,7 +12,7 @@
 #include "inc/hw_i2c.h"
 #include "driverlib/i2c.h"
 #include "inc/hw_memmap.h"
-#include "fxos8700cq_tiva.h"
+#include "fxos8700cq_proc.h"
 
 void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
              uint8_t *pReceiveData, uint8_t ui8NumBytes)
@@ -83,70 +83,41 @@ void I2CAGReceive(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
 }
 
 //sends an I2C command to the specified slave
-void I2CAGSend(uint8_t ui32SlaveAddress, uint8_t ui8NumArgs, ...)
+void I2CAGSend(uint32_t ui32SlaveAddress, uint8_t ui32SlaveRegister,
+               uint8_t *pReceiveData, uint8_t ui8NumBytes)
 {
     // Tell the master module what address it will place on the bus when
     // communicating with the slave.
     I2CMasterSlaveAddrSet(I2C0_BASE, ui32SlaveAddress, false);
 
-    //stores list of variable number of arguments
-    va_list listArguments;
+    //Put the register to be sent into FIFO
+    I2CMasterDataPut(I2C0_BASE, ui32SlaveRegister);
 
-    //specifies the va_list to "open" and the last fixed argument
-    //so listArguments knows where to start looking
-    va_start(listArguments, ui8NumArgs);
+    //Initiate send of data from the MCU
+    I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_START);
 
-    //put data to be sent into FIFO
-    I2CMasterDataPut(I2C0_BASE, va_arg(listArguments, uint32_t));
+    // Wait until MCU is done transferring.
+    while(I2CMasterBusy(I2C0_BASE));
 
-    //if there is only one argument, we only need to use the
-    //single send I2C function
-    if( 1 == ui8NumArgs )
+    uint8_t ui8Counter;
+    for (ui8Counter = 0; ui8Counter <= (ui8NumBytes - 2); ui8Counter++ )
     {
-        //Initiate send of data from the MCU
-        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_SINGLE_SEND);
-
-        // Wait until MCU is done transferring.
-        while(I2CMasterBusy(I2C0_BASE));
-
-        //"close" variable argument list
-        va_end(listArguments);
-    }
-
-    //otherwise, we start transmission of multiple bytes on the I2C bus
-    else
-    {
-        //Initiate send of data from the MCU
-        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_START);
-
-        // Wait until MCU is done transferring.
-        while(I2CMasterBusy(I2C0_BASE));
-
-        //send ui8NumArgs-2 pieces of data, using the
-        //BURST_SEND_CONT command of the I2C module
-        uint8_t ui8Counter;
-        for(ui8Counter = 1; ui8Counter < (ui8NumArgs - 1); ui8Counter++)
-        {
-            //put next piece of data into I2C FIFO
-            I2CMasterDataPut(I2C0_BASE, va_arg(listArguments, uint32_t));
-
-            //send next data that was just placed into FIFO
-            I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
-
-            // Wait until MCU is done transferring.
-            while(I2CMasterBusy(I2C0_BASE));
-        }
-
-        //put last piece of data into I2C FIFO
-        I2CMasterDataPut(I2C0_BASE, va_arg(listArguments, uint32_t));
+        //put next piece of data into I2C FIFO
+        I2CMasterDataPut(I2C0_BASE, pReceiveData[ui8Counter]);
 
         //send next data that was just placed into FIFO
-        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
+        I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_CONT);
 
         // Wait until MCU is done transferring.
         while(I2CMasterBusy(I2C0_BASE));
-
-        //"close" variable args list
-        va_end(listArguments);
     }
+
+    //put next piece of data into I2C FIFO
+    I2CMasterDataPut(I2C0_BASE, pReceiveData[ui8NumBytes - 1]);
+
+    //send next data that was just placed into FIFO
+    I2CMasterControl(I2C0_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
+
+    // Wait until MCU is done transferring.
+    while(I2CMasterBusy(I2C0_BASE));
 }
