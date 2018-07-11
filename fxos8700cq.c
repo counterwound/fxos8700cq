@@ -26,6 +26,7 @@ void AGActive(uint32_t ui32SlaveAddress)
     ui8Register[0] |= 0B00000001;
     I2CAGSend(ui32SlaveAddress, AG_CTRL_REG1, ui8Register, sizeof(ui8Register));
 }
+
 void AGAccelRange(uint32_t ui32SlaveAddress,tAccelRange tAFSR)
 {
     uint8_t ui8Register[1];
